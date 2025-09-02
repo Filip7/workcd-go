@@ -45,7 +45,8 @@ func main() {
 	// List subdirectories
 	dirs, err := listDirs(baseDir)
 	if err != nil {
-		log.Fatal(err)
+		fmt.Fprintf(os.Stderr, "Error: %v\n", err)
+		os.Exit(1)
 	}
 	if len(dirs) == 0 {
 		fmt.Fprintln(os.Stderr, "No directories found in base directory")
@@ -58,11 +59,13 @@ func main() {
 	output, err := fzfCmd.Output()
 	if err != nil {
 		// fzf exits with non-zero status on error (with --exit-0, no match is exit 0)
-		if exitErr, ok := err.(*exec.ExitError); ok {
+		if exitErr, ok := err.(*exec.ExitError); ok && exitErr.ExitCode() != 1 {
 			// fzf exited with non-zero status (likely user pressed Ctrl-C or Esc)
 			os.Exit(exitErr.ExitCode())
 		}
-		log.Fatal(err)
+		// Most likely that fzf could not find the directory
+		fmt.Fprintf(os.Stderr, "Error: could not find the directory, %v\n", err)
+		os.Exit(1)
 	}
 	selectedDir := strings.TrimSpace(string(output))
 	if selectedDir == "" {
@@ -138,14 +141,16 @@ func getConfigPathOrDefault() string {
 	if configHome == "" {
 		home, err := os.UserHomeDir()
 		if err != nil {
-			log.Fatalf("Error getting user home directory: %v", err)
+			fmt.Fprintf(os.Stderr, "Error getting user home directory: %v", err)
+			os.Exit(1)
 		}
 		configHome = filepath.Join(home, ".config")
 	}
 
 	configDir := filepath.Join(configHome, "workcd-go")
 	if err := os.MkdirAll(configDir, 0755); err != nil {
-		log.Fatalf("Error creating config directory: %v", err)
+		fmt.Fprintf(os.Stderr, "Error creating config directory: %v", err)
+		os.Exit(1)
 	}
 
 	return filepath.Join(configDir, "config.yaml")
