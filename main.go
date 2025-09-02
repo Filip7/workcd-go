@@ -36,6 +36,16 @@ func main() {
 		log.Fatalf("Error reading config: %v", err)
 	}
 
+	if strings.HasSuffix(fzfQuery, "/") {
+		// If the input contains '/' then query inside that directory instead of the baseDir
+		baseDir += "/" + fzfQuery
+	} else if strings.Contains(fzfQuery, "/") {
+		// If the input does not end with '/' but contains it, open the sub dir instead of further querying
+		dirs := strings.Split(fzfQuery, "/")
+		baseDir += "/" + strings.Join(dirs[:len(dirs)-1], "/")
+		fzfQuery = dirs[len(dirs)-1]
+	}
+
 	// Check if base directory exists
 	if _, err := os.Stat(baseDir); os.IsNotExist(err) {
 		fmt.Fprintf(os.Stderr, "Base directory not found: %s\n", baseDir)
