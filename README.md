@@ -1,0 +1,103 @@
+# workcd-go
+
+A fast directory changer for your terminal using fuzzy finding. Quickly navigate to any subdirectory within your workspace using `fzf` for interactive selection.
+
+This started as a zsh script that was vibe coded. But I wanted more features and easier editing of the code.  
+So this is a vibe coded Go port, but it's human verified.
+
+## Features
+
+- **Fast fuzzy finding**: Uses `fzf` for interactive directory selection
+- **Configurable base directory**: Set your workspace root in a YAML config file
+- **Editor integration**: Optionally open your editor after changing directories
+- **Shell integration**: Seamlessly integrates with bash/zsh through a simple function
+
+## Installation
+
+### Prerequisites
+
+- Go 1.24.6 or later
+- `fzf` (fuzzy finder) - Install from [junegun/fzf](https://github.com/junegun/fzf)
+
+### Build from source
+
+```bash
+git clone https://github.com/Filip7/workcd-go.git
+cd workcd-go
+go build -o workcd-go
+```
+
+### Install to PATH
+
+```bash
+# Copy the binary to a directory in your PATH
+sudo cp workcd-go /usr/local/bin/
+```
+
+**Important**: Shell integration is required for this program to work. The binary alone cannot change your shell's current directory - you must set up the shell function as described in the Shell Integration section below.
+
+## Configuration
+
+Create a config file at `~/.config/workcd-go/config.yaml`:
+
+```yaml
+base_dir: ~/Workspace # Your workspace root directory
+editor: code # Your preferred editor (optional)
+```
+
+If `base_dir` is not set, it defaults to `~/Workspace`.
+
+## Shell Integration
+
+Add this function to your `~/.bashrc` or `~/.zshrc`:
+
+```bash
+function workdir-cd() {
+    local cmd
+    cmd=$(workcd-go "$@")
+    if [[ -n "$cmd" ]]; then
+        eval "$cmd"
+    fi
+}
+```
+
+Then reload your shell configuration:
+
+```bash
+# For bash
+source ~/.bashrc
+
+# For zsh
+source ~/.zshrc
+```
+
+## Usage
+
+### Basic usage
+
+```bash
+# Change to a directory interactively
+workdir-cd
+
+# Search for directories containing "project"
+workdir-cd project
+
+# Change directory and open editor
+workdir-cd -e
+
+# Specify editor for this session
+workdir-cd -editor vim
+```
+
+### Command line options
+
+- `-e`: Open editor after changing directory
+- `-editor <editor>`: Specify editor (overrides config and $EDITOR)
+
+## How it works
+
+1. Reads your base directory from config (defaults to `~/Workspace`)
+2. Lists all subdirectories in your workspace
+3. Uses `fzf` for interactive fuzzy finding
+4. Outputs a `cd` command to change to the selected directory
+5. Optionally opens your editor in the new directory
