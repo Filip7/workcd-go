@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.1.0](https://github.com/Filip7/workcd-go/compare/v1.0.0...v1.1.0) (2025-09-02)
+
+
+### Features
+
+* better error handling ([9702b4f](https://github.com/Filip7/workcd-go/commit/9702b4f9da9237015e60176d6a8d80f9e7fa2305))
+* handle opening and querying subdirectories ([dfb15f0](https://github.com/Filip7/workcd-go/commit/dfb15f039a110455dafe17967b35e226024b710d))
+
 ## 1.0.0 (2025-09-02)
 
 
