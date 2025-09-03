@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.1](https://github.com/Filip7/workcd-go/compare/v1.2.0...v1.2.1) (2025-09-03)
+
+
+### Bug Fixes
+
+* when no directory name is passed to the command, just cd to the basedir ([dc9bb57](https://github.com/Filip7/workcd-go/commit/dc9bb578ee46f64bab72cab23151f1fc3443e969))
+
 ## [1.2.0](https://github.com/Filip7/workcd-go/compare/v1.1.0...v1.2.0) (2025-09-03)
 
 
