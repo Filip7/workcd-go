@@ -110,6 +110,8 @@ wd --editor vim
 wd --base-dir ~/Projects
 ```
 
+When no directory name is passed to the command, it will simply change to the base directory.
+
 `--base-dir` enables you to do a neat trick of creating aliases that search different directories
 
 For example:
