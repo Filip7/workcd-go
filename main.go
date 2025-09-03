@@ -26,7 +26,7 @@ func main() {
 	flag.Parse()
 
 	// Determine the fzf query
-	fzfQuery := "/"
+	var fzfQuery string
 	if flag.NArg() > 0 {
 		fzfQuery = flag.Arg(0)
 	}
@@ -42,6 +42,11 @@ func main() {
 		if err != nil {
 			log.Fatalf("Error reading config: %v", err)
 		}
+	}
+
+	if fzfQuery == "" {
+		fmt.Printf("cd %q\n", baseDir)
+		return
 	}
 
 	if strings.HasSuffix(fzfQuery, "/") {
@@ -97,6 +102,7 @@ func main() {
 		editor := getEditor(*editorFlag)
 		cmd += fmt.Sprintf(" && %s .", editor)
 	}
+
 	fmt.Println(cmd)
 }
 
