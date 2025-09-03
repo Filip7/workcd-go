@@ -52,7 +52,7 @@ If `base_dir` is not set, it defaults to `~/Workspace`.
 Add this function to your `~/.bashrc` or `~/.zshrc`:
 
 ```bash
-function workdir-cd() {
+function wd() {
     # Temporary file for capturing stderr
     local stderr_file=$(mktemp)
 
@@ -95,23 +95,35 @@ source ~/.zshrc
 
 ```bash
 # Change to a directory interactively
-workdir-cd
+wd
 
 # Search for directories containing "project"
-workdir-cd project
+wd project
 
 # Change directory and open editor
-workdir-cd -e
+wd -e
 
 # Specify editor for this session
-workdir-cd -editor vim
+wd --editor vim
+
+# Specify base directory for this session
+wd --base-dir ~/Projects
+```
+
+`--base-dir` enables you to do a neat trick of creating aliases that search different directories
+
+For example:
+
+```bash
+alias px="wd --base-dir ~/Workspace/projectx"
+alias docs="wd --base-dir ~/Documents"
 ```
 
 ### Command line options
 
 - `-e`: Open editor after changing directory
-- `-editor <editor>`: Specify editor (overrides config and $EDITOR)
-- `-base-dir <path>`: Specify base directory for workcd-go (overrides config)
+- `--editor <editor>`: Specify editor (overrides config and $EDITOR)
+- `--base-dir <path>`: Specify base directory for workcd-go (overrides config)
 
 ## How it works
 
