@@ -17,7 +17,7 @@ So this is a vibe coded Go port, but it's human verified.
 ### Prerequisites
 
 - Go 1.24.6 or later
-- `fzf` (fuzzy finder) - Install from [junegun/fzf](https://github.com/junegun/fzf)
+- `fzf` (fuzzy finder) - Install from [junegun/fzf](https://github.com/junegunn/fzf)
 
 ### Build from source
 
