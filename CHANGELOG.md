@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.2.0](https://github.com/Filip7/workcd-go/compare/v1.1.0...v1.2.0) (2025-09-03)
+
+
+### Features
+
+* add flag to set work dir ([ee1c533](https://github.com/Filip7/workcd-go/commit/ee1c5338d60074dd07ae17d4b6608d639a0853a8))
+* update shell wrapper to support error handling the correct way ([8c00e71](https://github.com/Filip7/workcd-go/commit/8c00e718b09ba3b688c8e5939b25dc69471aff5a))
+
 ## [1.1.0](https://github.com/Filip7/workcd-go/compare/v1.0.0...v1.1.0) (2025-09-02)
 
 
