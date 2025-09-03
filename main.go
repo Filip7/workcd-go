@@ -22,6 +22,7 @@ func main() {
 	// Parse flags
 	executeFlag := flag.Bool("e", false, "Open editor after changing directory")
 	editorFlag := flag.String("editor", "", "Editor to use (overrides config and $EDITOR)")
+	baseDirFlag := flag.String("base-dir", "", "Base directory for workcd-go")
 	flag.Parse()
 
 	// Determine the fzf query
@@ -30,10 +31,17 @@ func main() {
 		fzfQuery = flag.Arg(0)
 	}
 
-	// Determine the base directory from config
-	baseDir, err := getBaseDirFromConfig()
-	if err != nil {
-		log.Fatalf("Error reading config: %v", err)
+	// Determine the base directory from config or flag
+	var baseDir string
+	var err error
+
+	if *baseDirFlag != "" {
+		baseDir = *baseDirFlag
+	} else {
+		baseDir, err = getBaseDirFromConfig()
+		if err != nil {
+			log.Fatalf("Error reading config: %v", err)
+		}
 	}
 
 	if strings.HasSuffix(fzfQuery, "/") {
