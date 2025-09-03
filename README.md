@@ -53,10 +53,28 @@ Add this function to your `~/.bashrc` or `~/.zshrc`:
 
 ```bash
 function workdir-cd() {
-    local cmd
-    cmd=$(workcd-go "$@")
-    if [[ -n "$cmd" ]]; then
-        eval "$cmd"
+    # Temporary file for capturing stderr
+    local stderr_file=$(mktemp)
+
+    # Run the command, capturing stdout normally and redirecting stderr to the temp file
+    local stdout
+    stdout=$(workcd-go "$@" 2>"$stderr_file")
+
+    # Check if there was any error output
+    if [[ -s "$stderr_file" ]]; then
+        local stderr_content
+        stderr_content=$(cat "$stderr_file")
+        echo "Error: $stderr_content" >&2
+        rm -f "$stderr_file"
+        return 1
+    fi
+
+    # Clean up the temp file
+    rm -f "$stderr_file"
+
+    # Process stdout if no errors
+    if [[ -n "$stdout" ]]; then
+        eval "$stdout"
     fi
 }
 ```
@@ -93,6 +111,7 @@ workdir-cd -editor vim
 
 - `-e`: Open editor after changing directory
 - `-editor <editor>`: Specify editor (overrides config and $EDITOR)
+- `-base-dir <path>`: Specify base directory for workcd-go (overrides config)
 
 ## How it works
 
