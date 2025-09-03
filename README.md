@@ -94,8 +94,11 @@ source ~/.zshrc
 ### Basic usage
 
 ```bash
-# Change to a directory interactively
+# Change to the base directory (no argument)
 wd
+
+# To retain the old behavior (interactive selection), pass "/"
+wd /
 
 # Search for directories containing "project"
 wd project
@@ -110,8 +113,7 @@ wd --editor vim
 wd --base-dir ~/Projects
 ```
 
-`--base-dir` enables you to do a neat trick of creating aliases that search different directories
-
+`--base-dir` enables you to do a neat trick of creating aliases that search different directories  
 For example:
 
 ```bash
