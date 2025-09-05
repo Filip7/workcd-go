@@ -14,8 +14,9 @@ import (
 
 // Config represents the configuration structure
 type Config struct {
-	BaseDir string `yaml:"base_dir"`
-	Editor  string `yaml:"editor"`
+	BaseDir       string `yaml:"base_dir"`
+	Editor        string `yaml:"editor"`
+	PreviewViewer string `yaml:"preview_viewer"`
 }
 
 func main() {
@@ -23,6 +24,7 @@ func main() {
 	executeFlag := flag.Bool("e", false, "Open editor after changing directory")
 	editorFlag := flag.String("editor", "", "Editor to use (overrides config and $EDITOR)")
 	baseDirFlag := flag.String("base-dir", "", "Base directory for workcd-go")
+	previewViewer := flag.String("preview-viewer", "", "Tool to use for preview of markdown files")
 	flag.Parse()
 
 	// Determine the fzf query
@@ -73,11 +75,23 @@ func main() {
 	}
 	if len(dirs) == 0 {
 		fmt.Fprintln(os.Stderr, "No directories found in base directory")
-		os.Exit(0)
+		os.Exit(1)
+	}
+
+	// Prepare the preview viewer
+	var preview string
+	if *previewViewer != "" {
+		preview = *previewViewer
+	} else {
+		preview, err = getPreviewViewer()
+		if err != nil {
+			fmt.Fprintln(os.Stderr, err)
+			os.Exit(1)
+		}
 	}
 
 	// Prepare fzf command
-	fzfCmd := exec.Command("fzf", "--query", fzfQuery, "--select-1", "--exit-0")
+	fzfCmd := exec.Command("fzf", "--query", fzfQuery, "--select-1", "--exit-0", "--preview", "if [ -f {}/README.md ]; then "+preview+" {}/README.md; else echo \"No README found\"; fi")
 	fzfCmd.Stdin = strings.NewReader(strings.Join(dirs, "\n"))
 	output, err := fzfCmd.Output()
 	if err != nil {
@@ -178,6 +192,20 @@ func getConfigPathOrDefault() string {
 	}
 
 	return filepath.Join(configDir, "config.yaml")
+}
+
+func getPreviewViewer() (string, error) {
+	config, err := readConfig(getConfigPathOrDefault())
+	if err != nil && !os.IsNotExist(err) {
+		return "", err
+	}
+
+	// If base_dir is not set in config, use the default
+	if config.PreviewViewer == "" {
+		return "less", nil
+	}
+
+	return config.PreviewViewer, nil
 }
 
 func readConfig(path string) (*Config, error) {

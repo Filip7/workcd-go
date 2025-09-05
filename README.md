@@ -5,6 +5,8 @@ A fast directory changer for your terminal using fuzzy finding. Quickly navigate
 This started as a zsh script that was vibe coded. But I wanted more features and easier editing of the code.  
 So this is a vibe coded Go port, but it's human verified.
 
+Plan is to rewrite as many parts as possible in version 2.0, because I'm not happy with many vibe coded parts, and I prefer writing code myself.
+
 ## Features
 
 - **Fast fuzzy finding**: Uses `fzf` for interactive directory selection
@@ -97,20 +99,24 @@ source ~/.zshrc
 # Change to the base directory (no argument)
 wd
 
-# To retain the old behavior (interactive selection), pass "/"
+# interactive selection of base directory, pass "/"
 wd /
 
 # Search for directories containing "project"
 wd project
 
 # Change directory and open editor
-wd -e
+wd -e workcd-go
 
 # Specify editor for this session
-wd --editor vim
+wd --editor nvim workcd-go
+wd --editor idea java-project
 
 # Specify base directory for this session
-wd --base-dir ~/Projects
+wd --base-dir ~/Projects proj1
+
+# define the tool to preview readme files of the directories
+wd --preview-viewer glow /
 ```
 
 `--base-dir` enables you to do a neat trick of creating aliases that search different directories  
@@ -126,6 +132,7 @@ alias docs="wd --base-dir ~/Documents"
 - `-e`: Open editor after changing directory
 - `--editor <editor>`: Specify editor (overrides config and $EDITOR)
 - `--base-dir <path>`: Specify base directory for workcd-go (overrides config)
+- `--preview-viewer <viewer>`: Specify viewer for looking at README files in the directories
 
 ## How it works
 
