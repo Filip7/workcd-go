@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.0](https://github.com/Filip7/workcd-go/compare/v1.2.1...v1.3.0) (2025-09-05)
+
+
+### Features
+
+* show preview of README files in the direcotries wile using fzf ([9741eae](https://github.com/Filip7/workcd-go/commit/9741eaec7f8c9d022fe6cdc6a74b3f1abbf5599d))
+
 ## [1.2.1](https://github.com/Filip7/workcd-go/compare/v1.2.0...v1.2.1) (2025-09-03)
 
 
