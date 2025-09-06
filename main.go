@@ -3,29 +3,14 @@ package main
 import (
 	"flag"
 	"fmt"
-	"log"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"strings"
-
-	"gopkg.in/yaml.v3"
 )
 
-// Config represents the configuration structure
-type Config struct {
-	BaseDir       string `yaml:"base_dir"`
-	Editor        string `yaml:"editor"`
-	PreviewViewer string `yaml:"preview_viewer"`
-}
-
 func main() {
-	// Parse flags
-	executeFlag := flag.Bool("e", false, "Open editor after changing directory")
-	editorFlag := flag.String("editor", "", "Editor to use (overrides config and $EDITOR)")
-	baseDirFlag := flag.String("base-dir", "", "Base directory for workcd-go")
-	previewViewer := flag.String("preview-viewer", "", "Tool to use for preview of markdown files")
-	flag.Parse()
+	setupFlags()
 
 	// Determine the fzf query
 	var fzfQuery string
@@ -37,12 +22,19 @@ func main() {
 	var baseDir string
 	var err error
 
-	if *baseDirFlag != "" {
-		baseDir = *baseDirFlag
+	config, err := readConfig(getConfigPathOrDefault())
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error reading config: %v\n", err)
+		os.Exit(1)
+	}
+
+	if CmdFlags.BaseDir != "" {
+		baseDir = CmdFlags.BaseDir
 	} else {
-		baseDir, err = getBaseDirFromConfig()
+		baseDir, err = getBaseDirFromConfig(*config)
 		if err != nil {
-			log.Fatalf("Error reading config: %v", err)
+			fmt.Fprintf(os.Stderr, "Error getting base direcotry: %v\n", err)
+			os.Exit(1)
 		}
 	}
 
@@ -80,10 +72,10 @@ func main() {
 
 	// Prepare the preview viewer
 	var preview string
-	if *previewViewer != "" {
-		preview = *previewViewer
+	if CmdFlags.PreviewViewer != "" {
+		preview = CmdFlags.PreviewViewer
 	} else {
-		preview, err = getPreviewViewer()
+		preview, err = getPreviewViewer(*config)
 		if err != nil {
 			fmt.Fprintln(os.Stderr, err)
 			os.Exit(1)
@@ -107,27 +99,25 @@ func main() {
 	selectedDir := strings.TrimSpace(string(output))
 	if selectedDir == "" {
 		fmt.Fprintln(os.Stderr, "No directory selected.")
-		return
+		os.Exit(1)
 	}
 
 	// Output the shell command to stdout
 	cmd := fmt.Sprintf("cd %q", selectedDir)
-	if *executeFlag {
-		editor := getEditor(*editorFlag)
+	if CmdFlags.Execute {
+		editor := getEditor(*config)
 		cmd += fmt.Sprintf(" && %s .", editor)
 	}
 
 	fmt.Println(cmd)
 }
 
-func getEditor(editorFlag string) string {
-	if editorFlag != "" {
-		return editorFlag
+func getEditor(config Config) string {
+	if CmdFlags.Editor != "" {
+		return CmdFlags.Editor
 	}
 
-	// Try to read editor from config
-	config, err := readConfig(getConfigPathOrDefault())
-	if err == nil && config.Editor != "" {
+	if config.Editor != "" {
 		return config.Editor
 	}
 
@@ -139,6 +129,28 @@ func getEditor(editorFlag string) string {
 
 	// Final fallback
 	return "vi"
+}
+
+func getBaseDirFromConfig(config Config) (string, error) {
+	// If base_dir is not set in config, use the default
+	if config.BaseDir == "" {
+		home, err := os.UserHomeDir()
+		if err != nil {
+			return "", err
+		}
+		return filepath.Join(home, "Workspace"), nil
+	}
+
+	return config.BaseDir, nil
+}
+
+func getPreviewViewer(config Config) (string, error) {
+	// If base_dir is not set in config, use the default
+	if config.PreviewViewer == "" {
+		return "less", nil
+	}
+
+	return config.PreviewViewer, nil
 }
 
 func listDirs(dir string) ([]string, error) {
@@ -154,70 +166,4 @@ func listDirs(dir string) ([]string, error) {
 		}
 	}
 	return dirs, nil
-}
-
-func getBaseDirFromConfig() (string, error) {
-	config, err := readConfig(getConfigPathOrDefault())
-	if err != nil && !os.IsNotExist(err) {
-		return "", err
-	}
-
-	// If base_dir is not set in config, use the default
-	if config.BaseDir == "" {
-		home, err := os.UserHomeDir()
-		if err != nil {
-			return "", err
-		}
-		return filepath.Join(home, "Workspace"), nil
-	}
-
-	return config.BaseDir, nil
-}
-
-func getConfigPathOrDefault() string {
-	configHome := os.Getenv("XDG_CONFIG_HOME")
-	if configHome == "" {
-		home, err := os.UserHomeDir()
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error getting user home directory: %v", err)
-			os.Exit(1)
-		}
-		configHome = filepath.Join(home, ".config")
-	}
-
-	configDir := filepath.Join(configHome, "workcd-go")
-	if err := os.MkdirAll(configDir, 0755); err != nil {
-		fmt.Fprintf(os.Stderr, "Error creating config directory: %v", err)
-		os.Exit(1)
-	}
-
-	return filepath.Join(configDir, "config.yaml")
-}
-
-func getPreviewViewer() (string, error) {
-	config, err := readConfig(getConfigPathOrDefault())
-	if err != nil && !os.IsNotExist(err) {
-		return "", err
-	}
-
-	// If base_dir is not set in config, use the default
-	if config.PreviewViewer == "" {
-		return "less", nil
-	}
-
-	return config.PreviewViewer, nil
-}
-
-func readConfig(path string) (*Config, error) {
-	file, err := os.ReadFile(path)
-	if err != nil {
-		return &Config{}, err
-	}
-
-	var config Config
-	if err := yaml.Unmarshal(file, &config); err != nil {
-		return nil, err
-	}
-
-	return &config, nil
 }
