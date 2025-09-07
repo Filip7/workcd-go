@@ -1,28 +1,27 @@
 package main
 
 import (
-	"flag"
 	"fmt"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"strings"
+
+	"github.com/Filip7/workcd-go/internal/config"
+	"github.com/Filip7/workcd-go/internal/flags"
 )
 
 func main() {
-	cmdFlags := setupFlags()
+	cmdFlags := flags.SetupFlags()
 
 	// Determine the fzf query
-	var fzfQuery string
-	if flag.NArg() > 0 {
-		fzfQuery = flag.Arg(0)
-	}
+	fzfQuery := flags.GetCmdInput()
 
 	// Determine the base directory from config or flag
 	var baseDir string
 	var err error
 
-	config, err := readConfig(getConfigPathOrDefault())
+	config, err := config.ReadConfig(config.GetConfigPathOrDefault())
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error reading config: %v\n", err)
 		os.Exit(1)
@@ -112,7 +111,7 @@ func main() {
 	fmt.Println(cmd)
 }
 
-func getEditor(config *Config, cmdFlags *CmdFlags) string {
+func getEditor(config *config.Config, cmdFlags *flags.CmdFlags) string {
 	if cmdFlags.Editor != "" {
 		return cmdFlags.Editor
 	}
@@ -131,7 +130,7 @@ func getEditor(config *Config, cmdFlags *CmdFlags) string {
 	return "vi"
 }
 
-func getBaseDirFromConfig(config *Config) (string, error) {
+func getBaseDirFromConfig(config *config.Config) (string, error) {
 	// If base_dir is not set in config, use the default
 	if config.BaseDir == "" {
 		home, err := os.UserHomeDir()
@@ -144,7 +143,7 @@ func getBaseDirFromConfig(config *Config) (string, error) {
 	return config.BaseDir, nil
 }
 
-func getPreviewViewer(config *Config) (string, error) {
+func getPreviewViewer(config *config.Config) (string, error) {
 	// If base_dir is not set in config, use the default
 	if config.PreviewViewer == "" {
 		return "less", nil

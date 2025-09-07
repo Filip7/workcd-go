@@ -1,4 +1,5 @@
-package main
+// Package flags does flag setup and returns CmdFlags struct containg values
+package flags
 
 import (
 	"flag"
@@ -11,7 +12,7 @@ type CmdFlags struct {
 	PreviewViewer string
 }
 
-func setupFlags() CmdFlags {
+func SetupFlags() CmdFlags {
 	var cmdFlags CmdFlags
 	// Parse flags
 	flag.BoolVar(&cmdFlags.Execute, "e", false, "Open editor after changing directory")
@@ -21,4 +22,12 @@ func setupFlags() CmdFlags {
 	flag.Parse()
 
 	return cmdFlags
+}
+
+func GetCmdInput() string {
+	if flag.NArg() > 0 {
+		return flag.Arg(0)
+	}
+
+	return ""
 }
