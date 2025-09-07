@@ -10,7 +10,7 @@ import (
 )
 
 func main() {
-	setupFlags()
+	cmdFlags := setupFlags()
 
 	// Determine the fzf query
 	var fzfQuery string
@@ -28,10 +28,10 @@ func main() {
 		os.Exit(1)
 	}
 
-	if CmdFlags.BaseDir != "" {
-		baseDir = CmdFlags.BaseDir
+	if cmdFlags.BaseDir != "" {
+		baseDir = cmdFlags.BaseDir
 	} else {
-		baseDir, err = getBaseDirFromConfig(*config)
+		baseDir, err = getBaseDirFromConfig(config)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Error getting base direcotry: %v\n", err)
 			os.Exit(1)
@@ -60,7 +60,7 @@ func main() {
 	}
 
 	// List subdirectories
-	dirs, err := listDirs(baseDir)
+	dirs, err := listDirs(&baseDir)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error: %v\n", err)
 		os.Exit(1)
@@ -72,10 +72,10 @@ func main() {
 
 	// Prepare the preview viewer
 	var preview string
-	if CmdFlags.PreviewViewer != "" {
-		preview = CmdFlags.PreviewViewer
+	if cmdFlags.PreviewViewer != "" {
+		preview = cmdFlags.PreviewViewer
 	} else {
-		preview, err = getPreviewViewer(*config)
+		preview, err = getPreviewViewer(config)
 		if err != nil {
 			fmt.Fprintln(os.Stderr, err)
 			os.Exit(1)
@@ -104,17 +104,17 @@ func main() {
 
 	// Output the shell command to stdout
 	cmd := fmt.Sprintf("cd %q", selectedDir)
-	if CmdFlags.Execute {
-		editor := getEditor(*config)
+	if cmdFlags.Execute {
+		editor := getEditor(config, &cmdFlags)
 		cmd += fmt.Sprintf(" && %s .", editor)
 	}
 
 	fmt.Println(cmd)
 }
 
-func getEditor(config Config) string {
-	if CmdFlags.Editor != "" {
-		return CmdFlags.Editor
+func getEditor(config *Config, cmdFlags *CmdFlags) string {
+	if cmdFlags.Editor != "" {
+		return cmdFlags.Editor
 	}
 
 	if config.Editor != "" {
@@ -131,7 +131,7 @@ func getEditor(config Config) string {
 	return "vi"
 }
 
-func getBaseDirFromConfig(config Config) (string, error) {
+func getBaseDirFromConfig(config *Config) (string, error) {
 	// If base_dir is not set in config, use the default
 	if config.BaseDir == "" {
 		home, err := os.UserHomeDir()
@@ -144,7 +144,7 @@ func getBaseDirFromConfig(config Config) (string, error) {
 	return config.BaseDir, nil
 }
 
-func getPreviewViewer(config Config) (string, error) {
+func getPreviewViewer(config *Config) (string, error) {
 	// If base_dir is not set in config, use the default
 	if config.PreviewViewer == "" {
 		return "less", nil
@@ -153,15 +153,15 @@ func getPreviewViewer(config Config) (string, error) {
 	return config.PreviewViewer, nil
 }
 
-func listDirs(dir string) ([]string, error) {
+func listDirs(dir *string) ([]string, error) {
 	var dirs []string
-	entries, err := os.ReadDir(dir)
+	entries, err := os.ReadDir(*dir)
 	if err != nil {
 		return nil, err
 	}
 	for _, entry := range entries {
 		if entry.IsDir() {
-			fullPath := filepath.Join(dir, entry.Name())
+			fullPath := filepath.Join(*dir, entry.Name())
 			dirs = append(dirs, fullPath)
 		}
 	}
