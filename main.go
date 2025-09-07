@@ -21,7 +21,7 @@ func main() {
 	var baseDir string
 	var err error
 
-	config, err := config.ReadConfig(config.GetConfigPathOrDefault())
+	config, err := config.ReadConfig()
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error reading config: %v\n", err)
 		os.Exit(1)
@@ -38,7 +38,7 @@ func main() {
 	}
 
 	if fzfQuery == "" {
-		fmt.Printf("cd %q\n", baseDir)
+		fmt.Printf("cd %q", baseDir)
 		return
 	}
 
