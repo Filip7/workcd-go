@@ -4,20 +4,21 @@ import (
 	"flag"
 )
 
-type cliFlags struct {
+type CmdFlags struct {
 	Execute       bool
 	Editor        string
 	BaseDir       string
 	PreviewViewer string
 }
 
-var CmdFlags cliFlags
-
-func setupFlags() {
+func setupFlags() CmdFlags {
+	var cmdFlags CmdFlags
 	// Parse flags
-	flag.BoolVar(&CmdFlags.Execute, "e", false, "Open editor after changing directory")
-	flag.StringVar(&CmdFlags.Editor, "editor", "", "Editor to use (overrides config and $EDITOR)")
-	flag.StringVar(&CmdFlags.BaseDir, "base-dir", "", "Base directory for workcd-go")
-	flag.StringVar(&CmdFlags.PreviewViewer, "preview-viewer", "", "Tool to use for preview of markdown files")
+	flag.BoolVar(&cmdFlags.Execute, "e", false, "Open editor after changing directory")
+	flag.StringVar(&cmdFlags.Editor, "editor", "", "Editor to use (overrides config and $EDITOR)")
+	flag.StringVar(&cmdFlags.BaseDir, "base-dir", "", "Base directory for workcd-go")
+	flag.StringVar(&cmdFlags.PreviewViewer, "preview-viewer", "", "Tool to use for preview of markdown files")
 	flag.Parse()
+
+	return cmdFlags
 }
