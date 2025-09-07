@@ -1,4 +1,5 @@
-package main
+// Package config handles reading config from XDG_CONFIG_HOME or $HOME/.config
+package config
 
 import (
 	"fmt"
@@ -15,7 +16,7 @@ type Config struct {
 	PreviewViewer string `yaml:"preview_viewer"`
 }
 
-func readConfig(path string) (*Config, error) {
+func ReadConfig(path string) (*Config, error) {
 	file, err := os.ReadFile(path)
 	if err != nil {
 		return &Config{}, err
@@ -29,7 +30,7 @@ func readConfig(path string) (*Config, error) {
 	return &config, nil
 }
 
-func getConfigPathOrDefault() string {
+func GetConfigPathOrDefault() string {
 	configHome := os.Getenv("XDG_CONFIG_HOME")
 	if configHome == "" {
 		home, err := os.UserHomeDir()
