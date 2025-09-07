@@ -16,7 +16,8 @@ type Config struct {
 	PreviewViewer string `yaml:"preview_viewer"`
 }
 
-func ReadConfig(path string) (*Config, error) {
+func ReadConfig() (*Config, error) {
+	path := getConfigPathOrDefault()
 	file, err := os.ReadFile(path)
 	if err != nil {
 		return &Config{}, err
@@ -30,7 +31,7 @@ func ReadConfig(path string) (*Config, error) {
 	return &config, nil
 }
 
-func GetConfigPathOrDefault() string {
+func getConfigPathOrDefault() string {
 	configHome := os.Getenv("XDG_CONFIG_HOME")
 	if configHome == "" {
 		home, err := os.UserHomeDir()
