@@ -1,5 +1,21 @@
 # Changelog
 
+## [2.0.0](https://github.com/Filip7/workcd-go/compare/v1.3.0...v2.0.0) (2025-09-15)
+
+
+### ⚠ BREAKING CHANGES
+
+* move config and flag functions to their files
+
+### Features
+
+* switch to go 1.25 and use experimental garbage collector ([22417fb](https://github.com/Filip7/workcd-go/commit/22417fb2952e98e07df588f42c0f90e94791928a))
+
+
+### Code Refactoring
+
+* move config and flag functions to their files ([e6b5372](https://github.com/Filip7/workcd-go/commit/e6b53728d7f88ff6891043b0178a863d8c0a9397))
+
 ## [1.3.0](https://github.com/Filip7/workcd-go/compare/v1.2.1...v1.3.0) (2025-09-05)
 
 
