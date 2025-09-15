@@ -1,26 +1,22 @@
-# workcd-g
+# workcd
 
-A fast directory changer for your terminal using fuzzy finding. Quickly navigate to any subdirectory within your workspace using `fzf` for interactive selection.
+Directory changer for your terminal using fuzzy finding. Quickly navigate to any subdirectory within your workspace using `fzf` for interactive selection.
 
 This started as a zsh script that was vibe coded. But I wanted more features and easier editing of the code.  
 So this is a vibe coded Go port, but it's human verified.
-
-> [!NOTE]
-> Plan is to rewrite as many parts as possible in version 2.0, because I'm not happy with many vibe coded parts, and I prefer writing code myself.
-> Work in progress...
 
 ## Features
 
 - **Fast fuzzy finding**: Uses `fzf` for interactive directory selection
 - **Configurable base directory**: Set your workspace root in a YAML config file
 - **Editor integration**: Optionally open your editor after changing directories
-- **Shell integration**: Seamlessly integrates with bash/zsh through a simple function
+- **Shell integration**: currently uses a helper shell script
 
 ## Installation
 
 ### Prerequisites
 
-- Go 1.24.6 or later
+- Go 1.25.1 or later
 - `fzf` (fuzzy finder) - Install from [junegun/fzf](https://github.com/junegunn/fzf)
 
 ### Build from source
@@ -43,6 +39,8 @@ sudo cp workcd-go /usr/local/bin/
 ## Configuration
 
 Create a configuration file at `~/.config/workcd/config.yaml`:
+
+- Also supports `XDG_CONFIG_HOME`
 
 ```yaml
 base_dir: ~/Workspace # Your workspace root directory
@@ -128,6 +126,7 @@ For example:
 ```bash
 alias px="wd --base-dir ~/Workspace/projectx"
 alias docs="wd --base-dir ~/Documents"
+alias jcd="wd --editor idea --base-dir ~/Java-Projects"
 ```
 
 ### Command line options
