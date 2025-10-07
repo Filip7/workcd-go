@@ -2,6 +2,7 @@
 package config
 
 import (
+	"encoding/json"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -29,6 +30,25 @@ func ReadConfig() (*Config, error) {
 	}
 
 	return &config, nil
+}
+
+func PrintConfig() {
+	path := getConfigPathOrDefault()
+	file, err := os.ReadFile(path)
+	if err != nil {
+		fmt.Fprintln(os.Stderr, "Error reading the config")
+		os.Exit(1)
+	}
+
+	var config Config
+	if err := yaml.Unmarshal(file, &config); err != nil {
+		fmt.Fprintln(os.Stderr, "Error parsing the config")
+		os.Exit(1)
+	}
+
+	formatedJSON, _ := json.MarshalIndent(config, "", "\t")
+
+	fmt.Println(string(formatedJSON))
 }
 
 func getConfigPathOrDefault() string {
