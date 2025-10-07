@@ -72,10 +72,20 @@ function wd() {
         return 1
     fi
 
+    # Check if --print-config is in the arguments
+    for arg in "$@"; do
+        if [[ "$arg" == "--print-config" ]]; then
+            # Print the stdout directly and exit
+            echo "$stdout"
+            rm -f "$stderr_file"
+            return 0
+        fi
+    done
+
     # Clean up the temp file
     rm -f "$stderr_file"
 
-    # Process stdout if no errors
+    # Process stdout if no errors and no --print-config flag
     if [[ -n "$stdout" ]]; then
         eval "$stdout"
     fi
@@ -118,6 +128,11 @@ wd --base-dir ~/Projects proj1
 
 # define the tool to preview readme files of the directories
 wd --preview-viewer glow /
+
+## Helper commands
+
+# print the config file to verify it's contents
+wd --print-config
 ```
 
 `--base-dir` enables you to do a neat trick of creating aliases that search different directories  
