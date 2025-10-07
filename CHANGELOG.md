@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.1.0](https://github.com/Filip7/workcd-go/compare/v2.0.0...v2.1.0) (2025-10-07)
+
+
+### Features
+
+* print config using --print-config ([#9](https://github.com/Filip7/workcd-go/issues/9)) ([b391d6c](https://github.com/Filip7/workcd-go/commit/b391d6c6566e89f547299423e9cf68a9d56bfa6e))
+
+
+### Bug Fixes
+
+* print config as yaml ([626c850](https://github.com/Filip7/workcd-go/commit/626c850839ccff529bbfe5f63f6acb5380253234))
+
 ## [2.0.0](https://github.com/Filip7/workcd-go/compare/v1.3.0...v2.0.0) (2025-09-15)
 
 
