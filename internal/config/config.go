@@ -2,7 +2,6 @@
 package config
 
 import (
-	"encoding/json"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -46,9 +45,9 @@ func PrintConfig() {
 		os.Exit(1)
 	}
 
-	formatedJSON, _ := json.MarshalIndent(config, "", "\t")
+	yamlConfig, _ := yaml.Marshal(config)
 
-	fmt.Println(string(formatedJSON))
+	fmt.Println(string(yamlConfig))
 }
 
 func getConfigPathOrDefault() string {
