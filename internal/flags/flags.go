@@ -10,6 +10,7 @@ type CmdFlags struct {
 	Editor        string
 	BaseDir       string
 	PreviewViewer string
+	PrintConfig   bool
 }
 
 func SetupFlags() CmdFlags {
@@ -19,6 +20,7 @@ func SetupFlags() CmdFlags {
 	flag.StringVar(&cmdFlags.Editor, "editor", "", "Editor to use (overrides config and $EDITOR)")
 	flag.StringVar(&cmdFlags.BaseDir, "base-dir", "", "Base directory for workcd-go")
 	flag.StringVar(&cmdFlags.PreviewViewer, "preview-viewer", "", "Tool to use for preview of markdown files")
+	flag.BoolVar(&cmdFlags.PrintConfig, "print-config", false, "Print config currently in use")
 	flag.Parse()
 
 	return cmdFlags
