@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.2.0](https://github.com/Filip7/workcd-go/compare/v2.1.1...v2.2.0) (2025-10-08)
+
+
+### Features
+
+* shell integration baked in - no more copy pasting whole functions to .zshrc ([#13](https://github.com/Filip7/workcd-go/issues/13)) ([5c7eccf](https://github.com/Filip7/workcd-go/commit/5c7eccf13e38f4612ca403607e0fb6e72c7115a9))
+
 ## [2.1.1](https://github.com/Filip7/workcd-go/compare/v2.1.0...v2.1.1) (2025-10-08)
 
 
