@@ -1,4 +1,4 @@
-// Package config handles reading config from XDG_CONFIG_HOME or $HOME/.config
+// Package config handles configuration management
 package config
 
 import (
@@ -29,18 +29,6 @@ func ReadConfig() (*Config, error) {
 	}
 
 	return &config, nil
-}
-
-func PrintConfig() {
-	config, err := ReadConfig()
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error reading config %v\n", err)
-		os.Exit(1)
-	}
-
-	yamlConfig, _ := yaml.Marshal(config)
-
-	fmt.Println(string(yamlConfig))
 }
 
 func getConfigPathOrDefault() string {
