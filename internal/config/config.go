@@ -32,16 +32,9 @@ func ReadConfig() (*Config, error) {
 }
 
 func PrintConfig() {
-	path := getConfigPathOrDefault()
-	file, err := os.ReadFile(path)
+	config, err := ReadConfig()
 	if err != nil {
-		fmt.Fprintln(os.Stderr, "Error reading the config")
-		os.Exit(1)
-	}
-
-	var config Config
-	if err := yaml.Unmarshal(file, &config); err != nil {
-		fmt.Fprintln(os.Stderr, "Error parsing the config")
+		fmt.Fprintf(os.Stderr, "Error reading config %v\n", err)
 		os.Exit(1)
 	}
 
