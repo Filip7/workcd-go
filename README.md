@@ -55,42 +55,13 @@ If `base_dir` is not set, it defaults to `~/Workspace`.
 Add this function to your `~/.bashrc` or `~/.zshrc`:
 
 ```bash
-function wd() {
-    # Temporary file for capturing stderr
-    local stderr_file=$(mktemp)
-
-    # Run the command, capturing stdout normally and redirecting stderr to the temp file
-    local stdout
-    stdout=$(workcd-go "$@" 2>"$stderr_file")
-
-    # Check if there was any error output
-    if [[ -s "$stderr_file" ]]; then
-        local stderr_content
-        stderr_content=$(cat "$stderr_file")
-        echo "Error: $stderr_content" >&2
-        rm -f "$stderr_file"
-        return 1
-    fi
-
-    # Check if --print-config is in the arguments
-    for arg in "$@"; do
-        if [[ "$arg" == "--print-config" ]]; then
-            # Print the stdout directly and exit
-            echo "$stdout"
-            rm -f "$stderr_file"
-            return 0
-        fi
-    done
-
-    # Clean up the temp file
-    rm -f "$stderr_file"
-
-    # Process stdout if no errors and no --print-config flag
-    if [[ -n "$stdout" ]]; then
-        eval "$stdout"
-    fi
-}
+eval "$(workcd-go --eval zsh)"
 ```
+
+This will make workcd-go available as `wd` in your shell.  
+Additional shell support when it happens, feel free to open a PR for support.
+
+Option `--binary-path` is available if you store the binary elsewhere.
 
 Then reload your shell configuration:
 
