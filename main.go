@@ -12,7 +12,7 @@ import (
 func main() {
 	cmdFlags := flags.SetupFlags()
 	if cmdFlags.PrintConfig {
-		config.PrintConfig()
+		config.PrintConfig(cmdFlags)
 		os.Exit(0)
 	}
 

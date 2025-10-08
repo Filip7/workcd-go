@@ -17,24 +17,11 @@ func PrepareCommand(cmdFlags flags.CmdFlags) string {
 	fzfQuery := flags.GetCmdInput()
 
 	// Determine the base directory from config or flag
-	var baseDir string
 	var err error
 
-	config, err := config.ReadConfig()
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error reading config: %v\n", err)
-		os.Exit(1)
-	}
-
-	if cmdFlags.BaseDir != "" {
-		baseDir = cmdFlags.BaseDir
-	} else {
-		baseDir, err = getBaseDirFromConfig(config)
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error getting base direcotry: %v\n", err)
-			os.Exit(1)
-		}
-	}
+	// Merge config and flags under one config
+	config := config.MergeConfig(cmdFlags)
+	baseDir := config.BaseDir
 
 	if fzfQuery == "" {
 		fmt.Printf("cd %q", baseDir)
@@ -68,20 +55,8 @@ func PrepareCommand(cmdFlags flags.CmdFlags) string {
 		os.Exit(1)
 	}
 
-	// Prepare the preview viewer
-	var preview string
-	if cmdFlags.PreviewViewer != "" {
-		preview = cmdFlags.PreviewViewer
-	} else {
-		preview, err = getPreviewViewer(config)
-		if err != nil {
-			fmt.Fprintln(os.Stderr, err)
-			os.Exit(1)
-		}
-	}
-
 	// Prepare fzf command
-	fzfCmd := exec.Command("fzf", "--query", fzfQuery, "--select-1", "--exit-0", "--preview", "if [ -f {}/README.md ]; then "+preview+" {}/README.md; else echo \"No README found\"; fi")
+	fzfCmd := exec.Command("fzf", "--query", fzfQuery, "--select-1", "--exit-0", "--preview", "if [ -f {}/README.md ]; then "+config.PreviewViewer+" {}/README.md; else echo \"No README found\"; fi")
 	fzfCmd.Stdin = strings.NewReader(strings.Join(dirs, "\n"))
 	output, err := fzfCmd.Output()
 	if err != nil {
@@ -103,52 +78,11 @@ func PrepareCommand(cmdFlags flags.CmdFlags) string {
 	// Output the shell command to stdout
 	cmd := fmt.Sprintf("cd %q", selectedDir)
 	if cmdFlags.Execute {
-		editor := getEditor(config, &cmdFlags)
+		editor := config.Editor
 		cmd += fmt.Sprintf(" && %s .", editor)
 	}
 
 	return cmd
-}
-
-func getEditor(config *config.Config, cmdFlags *flags.CmdFlags) string {
-	if cmdFlags.Editor != "" {
-		return cmdFlags.Editor
-	}
-
-	if config.Editor != "" {
-		return config.Editor
-	}
-
-	// Fall back to $EDITOR environment variable
-	editor := os.Getenv("EDITOR")
-	if editor != "" {
-		return editor
-	}
-
-	// Final fallback
-	return "vi"
-}
-
-func getBaseDirFromConfig(config *config.Config) (string, error) {
-	// If base_dir is not set in config, use the default
-	if config.BaseDir == "" {
-		home, err := os.UserHomeDir()
-		if err != nil {
-			return "", err
-		}
-		return filepath.Join(home, "Workspace"), nil
-	}
-
-	return config.BaseDir, nil
-}
-
-func getPreviewViewer(config *config.Config) (string, error) {
-	// If base_dir is not set in config, use the default
-	if config.PreviewViewer == "" {
-		return "less", nil
-	}
-
-	return config.PreviewViewer, nil
 }
 
 func listDirs(dir *string) ([]string, error) {
