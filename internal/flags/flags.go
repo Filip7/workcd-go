@@ -11,6 +11,8 @@ type CmdFlags struct {
 	BaseDir       string
 	PreviewViewer string
 	PrintConfig   bool
+	Shell         string
+	BinaryPath    string
 }
 
 func SetupFlags() CmdFlags {
@@ -21,6 +23,8 @@ func SetupFlags() CmdFlags {
 	flag.StringVar(&cmdFlags.BaseDir, "base-dir", "", "Base directory for workcd-go")
 	flag.StringVar(&cmdFlags.PreviewViewer, "preview-viewer", "", "Tool to use for preview of markdown files")
 	flag.BoolVar(&cmdFlags.PrintConfig, "print-config", false, "Print config currently in use")
+	flag.StringVar(&cmdFlags.Shell, "eval", "", "Get function used for shell integration, pass the shell that you use")
+	flag.StringVar(&cmdFlags.BinaryPath, "binary-path", "/bin/workcd-go", "Define path to the binary of the tool, default to /bin/workcd-go")
 	flag.Parse()
 
 	return cmdFlags
