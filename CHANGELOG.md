@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.1.1](https://github.com/Filip7/workcd-go/compare/v2.1.0...v2.1.1) (2025-10-08)
+
+
+### Bug Fixes
+
+* print config that is currently used - takes into the accout both flags and config ([86c36c9](https://github.com/Filip7/workcd-go/commit/86c36c95a081933b70f725b90ce58daf90bbf42e))
+
 ## [2.1.0](https://github.com/Filip7/workcd-go/compare/v2.0.0...v2.1.0) (2025-10-07)
 
 
