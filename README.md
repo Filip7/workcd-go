@@ -1,9 +1,7 @@
 # workcd
 
-Directory changer for your terminal using fuzzy finding. Quickly navigate to any subdirectory within your workspace using `fzf` for interactive selection.
-
-This started as a zsh script that was vibe coded. But I wanted more features and easier editing of the code.  
-So this is a vibe coded Go port, but it's human verified.
+Directory changer that supports opening your editor instantly within the directory.  
+Uses `fzf` for interactive selection of directory when your query is ambiguous.
 
 ## Features
 
@@ -43,9 +41,9 @@ Create a configuration file at `~/.config/workcd/config.yaml`:
 - Also supports `XDG_CONFIG_HOME`
 
 ```yaml
-base_dir: ~/Workspace # Your workspace root directory
-editor: nvim # Your preferred editor (optional)
-preview_viewer: glow # Tool for previewing README files
+base_dir: ~/Workspace # Your workspace root directory (default is $HOME/Workspace)
+editor: nvim # Your preferred editor (default is vi)
+preview_viewer: glow # Tool for previewing README files (default is less)
 ```
 
 If `base_dir` is not set, it defaults to `~/Workspace`.
@@ -61,7 +59,10 @@ eval "$(workcd-go --eval zsh)"
 This will make workcd-go available as `wd` in your shell.  
 Additional shell support when it happens, feel free to open a PR for support.
 
-Option `--binary-path` is available if you store the binary elsewhere.
+Option `--binary-path` is available if you store the binary elsewhere.  
+Option `--function-name` is available if you wish for the function to be named differently.
+Default is `wd`, but if you pass this option with `eval`, the function will be
+available as whatever you passed.
 
 Then reload your shell configuration:
 
@@ -78,16 +79,16 @@ source ~/.zshrc
 ### Basic usage
 
 ```bash
-# Change to the base directory (no argument)
+# cd to the base directory (no argument)
 wd
 
 # interactive selection of base directory, pass "/"
 wd /
 
-# Search for directories containing "project"
+# Search for directories (under base_dir) containing "project"
 wd project
 
-# Change directory and open editor
+# Change directory and open editor in it
 wd -e workcd-go
 
 # Specify editor for this session
@@ -129,3 +130,11 @@ alias jcd="wd --editor idea --base-dir ~/Java-Projects"
 3. Uses `fzf` for interactive fuzzy finding
 4. Outputs a `cd` command to change to the selected directory
 5. Optionally opens your editor in the new directory
+
+## Why?
+
+I became a DevOps for certain customer (yeah, DevOps is not necessarily a role, but you can imagine the kind of tasks one has)
+and with that came a lot of projects I had to manage, cding into each one became cumbersome, and every time typing `nvim .` (or `v .`).
+So I decided to create a small shell script that would do that for me(asked AI to generate it, because I dislike writing too much bash scripts).  
+With time I wanted to also be able to use `fzf` to enable better interactive selection. And with time bash script became hard to manage.
+So asked AI to port it to go, and then took over the development myself.
