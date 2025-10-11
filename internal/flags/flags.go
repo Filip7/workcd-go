@@ -13,6 +13,7 @@ type CmdFlags struct {
 	PrintConfig   bool
 	Shell         string
 	BinaryPath    string
+	FunctionName  string
 }
 
 func SetupFlags() CmdFlags {
@@ -25,6 +26,7 @@ func SetupFlags() CmdFlags {
 	flag.BoolVar(&cmdFlags.PrintConfig, "print-config", false, "Print config currently in use")
 	flag.StringVar(&cmdFlags.Shell, "eval", "", "Get function used for shell integration, pass the shell that you use")
 	flag.StringVar(&cmdFlags.BinaryPath, "binary-path", "/bin/workcd-go", "Define path to the binary of the tool, default to /bin/workcd-go")
+	flag.StringVar(&cmdFlags.FunctionName, "function-name", "wd", "Define name of the function that will be passed to the shell, default is `wd`")
 	flag.Parse()
 
 	return cmdFlags

@@ -1,4 +1,4 @@
-function wd() {
+function {{ .FunctionName }}() {
     # Temporary file for capturing stderr
     local stderr_file=$(mktemp)
     # Run the command, capturing stdout normally and redirecting stderr to the temp file

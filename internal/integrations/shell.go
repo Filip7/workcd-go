@@ -26,7 +26,10 @@ func GetShellIntegration(shell string, cmdFlags flags.CmdFlags) string {
 		os.Exit(1)
 	}
 	var tpl bytes.Buffer
-	err = tmpl.Execute(&tpl, struct{ BinaryPath string }{BinaryPath: cmdFlags.BinaryPath})
+	err = tmpl.Execute(&tpl, struct {
+		FunctionName string
+		BinaryPath   string
+	}{FunctionName: cmdFlags.FunctionName, BinaryPath: cmdFlags.BinaryPath})
 	if err != nil {
 		fmt.Fprintln(os.Stderr, "Error opening the template ", err)
 		os.Exit(1)
