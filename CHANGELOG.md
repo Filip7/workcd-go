@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.3.0](https://github.com/Filip7/workcd-go/compare/v2.2.0...v2.3.0) (2025-10-11)
+
+
+### Features
+
+* support custom name of the function (default is still `wd`) ([13013f3](https://github.com/Filip7/workcd-go/commit/13013f391de958c2492ede3ee84b434f1bee7ba2))
+
 ## [2.2.0](https://github.com/Filip7/workcd-go/compare/v2.1.1...v2.2.0) (2025-10-08)
 
 
