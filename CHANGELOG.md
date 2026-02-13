@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.3.1](https://github.com/Filip7/workcd-go/compare/v2.3.0...v2.3.1) (2026-02-13)
+
+
+### Bug Fixes
+
+* support preview of non md README files ([#17](https://github.com/Filip7/workcd-go/issues/17)) ([d0f8ab1](https://github.com/Filip7/workcd-go/commit/d0f8ab1e25dbe99469b48e85c29f0bf28e7b2a89))
+
 ## [2.3.0](https://github.com/Filip7/workcd-go/compare/v2.2.0...v2.3.0) (2025-10-11)
 
 
