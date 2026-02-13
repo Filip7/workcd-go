@@ -56,7 +56,8 @@ func PrepareCommand(cmdFlags flags.CmdFlags) string {
 	}
 
 	// Prepare fzf command
-	fzfCmd := exec.Command("fzf", "--query", fzfQuery, "--select-1", "--exit-0", "--preview", "if [ -f {}/README.md ]; then "+config.PreviewViewer+" {}/README.md; else echo \"No README found\"; fi")
+	previewStr := "if [ -f {}/README.md ]; then " + config.PreviewViewer + " {}/README.md; elif [ -f {}/README ]; then " + config.PreviewViewer + " {}/README; else echo \"No README found\"; fi"
+	fzfCmd := exec.Command("fzf", "--query", fzfQuery, "--select-1", "--exit-0", "--preview", previewStr)
 	fzfCmd.Stdin = strings.NewReader(strings.Join(dirs, "\n"))
 	output, err := fzfCmd.Output()
 	if err != nil {
